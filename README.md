@@ -8,11 +8,13 @@ This is a student and staff portal prototype to get started with the development
 
 ### Instructions 
 
-git clone https://github.com/jvanhalen/tikohud
+```
+git clone git@github.com:jvanhalen/tikohud.git
 cd tikohud
 npm install
 npm install nodemon -g
 npm start # or nodemon bin/
+```
 
 Connect browser to http://localhost:3000
 Happy hacking!
