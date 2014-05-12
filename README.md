@@ -18,4 +18,7 @@ npm start # or nodemon bin/www
 
 Connect browser to http://localhost:3000
 
+
+Edit users in http://localhost:3000/users
+
 Happy hacking!
