@@ -4,7 +4,7 @@ This is a student and staff portal prototype to get started with the development
 
 ### Prerequisites
 
- - nodejs installed on your system
+ - `nodejs` and `mongodb` installed on your system
 
 ### Instructions 
 
