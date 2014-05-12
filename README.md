@@ -13,7 +13,7 @@ git clone git@github.com:jvanhalen/tikohud.git
 cd tikohud
 npm install
 npm install nodemon -g
-npm start # or nodemon bin/
+npm start # or nodemon bin/www
 ```
 
 Connect browser to http://localhost:3000
