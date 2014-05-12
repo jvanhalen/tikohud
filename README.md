@@ -14,4 +14,5 @@ npm install
 npm install nodemon -g
 npm start # or nodemon bin/
 
+Connect browser to http://localhost:3000
 Happy hacking!
