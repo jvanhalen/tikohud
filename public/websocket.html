@@ -1,19 +1,20 @@
+<!doctype html>
 <html>
 <head>
     <title>HTML websocket test</title>
     <script src="socket.io.js"></script>
 </head>
 <body>
-    Moi
-    <script>
-        var socket = io.connect('http://localhost:8181');
-        socket.on('connect', function () {
-            socket.send('hi');
+Moi
+<script>
+    var socket = io.connect('http://localhost:8181');
+    socket.on('connect', function () {
+        socket.send('hi');
 
-            socket.on('message', function (msg) {
+        socket.on('message', function (msg) {
             // my msg
-            });
         });
-    </script>
+    });
+</script>
 </body>
 </html>

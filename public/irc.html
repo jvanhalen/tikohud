@@ -1,39 +1,39 @@
 <div class="panel panel-default">
-  <div class="panel-body"> 
-  	<div id="chatbox" ng-repeat="line in irc.log"><div> <b>{{ line.timestamp }}</b> {{ line.text }}</div></div>
-  </div>
+    <div class="panel-body">
+        <div id="chatbox" ng-repeat="line in irc.log"><div> <b>{{ line.timestamp }}</b> {{ line.text }}</div></div>
+    </div>
 </div>
 
 <div class="navbar navbar-default navbar-fixed-bottom" role="navigation">
     <div class="container-fluid">
-		<form class="navbar-form navbar-left" role="button">
-			<div class="form-group">
-				Command: <input type="text" maxsize="40" size="100" class="form-control" placeholder="IRC command" ng-model="irc.command">
-			</div>
-			<button type="submit" class="btn btn-default" ng-click="execute()">Send</button>
-			<a href="http://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands" target="_blank"><span class="glyphicon glyphicon-question-sign">Help</span></a>
-		</form>
+        <form class="navbar-form navbar-left" role="button">
+            <div class="form-group">
+                Command: <input type="text" maxsize="40" size="100" class="form-control" placeholder="IRC command" ng-model="irc.command">
+            </div>
+            <button type="submit" class="btn btn-default" ng-click="execute()">Send</button>
+            <a href="http://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands" target="_blank"><span class="glyphicon glyphicon-question-sign">Help</span></a>
+        </form>
     </div>
 </div>
-    <script>
-        var socket = io.connect('http://localhost:8181');
-        socket.on('connect', function () {
-            socket.on('message', function (msg) {
-            	console.log("received irc data:", msg);
-			    var scope = angular.element($("#chatbox")).scope();
+<script>
+    var socket = io.connect('http://localhost:8181');
+    socket.on('connect', function () {
+        socket.on('message', function (msg) {
+            console.log("received irc data:", msg);
+            var scope = angular.element($("#chatbox")).scope();
 
-			    // JSON -> JavaScript object
-			    msg = JSON.parse(msg);
+            // JSON -> JavaScript object
+            msg = JSON.parse(msg);
 
-			    scope.$apply(function() {
-			    	if(msg.seqno && msg.timestamp && msg.text) {
-			        	scope.irc.log.push(msg);
-			    	}
-			        else {
-			        	console.log("error in websocket IRC data");
-			        }
-			    });
-            	
+            scope.$apply(function() {
+                if(msg.seqno && msg.timestamp && msg.text) {
+                    scope.irc.log.push(msg);
+                }
+                else {
+                    console.log("error in websocket IRC data");
+                }
             });
+
         });
-    </script>
+    });
+</script>

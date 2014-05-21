@@ -41,10 +41,10 @@ io.sockets.on('connection', function (websocket) {
 
     // Handle incoming messages CLIENT -> SERVER
     websocket.on('message', function (data) {
-        console.log("received", data);
+        console.log("ws received", data);
         if (data === "connect") {
-            console.log("received CONNECT, starting IRC");
-            websocket.tcpsocket = new irc(user[index], websocket);
+            console.log("ws received CONNECT, starting IRC");
+            websocket.tcpsocket = new irc(user[index%3], websocket);
             index++;
         }
         else {
@@ -91,7 +91,7 @@ var irc = function(user, websocket) {
 
     // Add listeners
     self.socket.on('data', receive);
-    self.socket.on('disconnect', disconnect);
+    self.socket.on('close', disconnect);
     self.socket.on('connect', function() {
         self.connected = true;
         console.log("Connected to IRC");
@@ -120,6 +120,7 @@ var irc = function(user, websocket) {
                 console.error("ERROR tried to send data > 510 chars in length: " + data);
             } 
             else {
+                if(self.socket)
                 self.socket.write(data + '\r\n', 'utf8', function () {
                     console.log("-> " + data);
                 });
