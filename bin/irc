@@ -8,17 +8,17 @@ var message = require('irc-message');
 
 var index = 0;
 var user = [{taken: false,
-            name: 'jaakkovv',
-            nickname: 'TikoHUDA',
-            realname: 'Jaakko V1'},
+            name: 'jaakko',
+            nickname: 'HUDA',
+            realname: 'Jaakko Vee'},
             {taken: false,
-            name: 'jaakkovw',
-            nickname: 'TikoHUDB',
-            realname: 'Jaakko V2'},
+            name: 'jaakko',
+            nickname: 'HUDB',
+            realname: 'Jaakko Vee'},
             {taken: false,
-            name: 'jaakkovww',
-            nickname: 'TikoHUDC',
-            realname: 'Jaakko V3'}]
+            name: 'jaakko',
+            nickname: 'HUDC',
+            realname: 'Jaakko Vee'}]
 
 var seqno = 0;
 
@@ -98,12 +98,12 @@ var irc = function(user, websocket) {
     });
 
     self.connect = function() {
-        console.log("irc.connect");
+        console.log("irc.connect", self.user);
 
         // Connect to IRC SERVER
         self.socket.connect(6667, 'irc.quakenet.org', function () {
-            self.send('USER ' + user.name + ' localhost * ' + user.realname);
-            self.send('NICK ' + user.nickname);
+            self.send('USER ' + self.user.name + ' localhost * ' + self.user.realname);
+            self.send('NICK ' + self.user.nickname);
         });
     }
 
@@ -115,14 +115,14 @@ var irc = function(user, websocket) {
         if (true == self.connected) {
             if (!data || data.length == 0) {
                 console.error("ERROR tried to send no data");
-            } else if (data.length > 510) {
+            } 
+            else if (data.length > 510) {
                 console.error("ERROR tried to send data > 510 chars in length: " + data);
-            } else {
-                /*
+            } 
+            else {
                 self.socket.write(data + '\r\n', 'utf8', function () {
                     console.log("-> " + data);
                 });
-*/
             }
         }
         else {
