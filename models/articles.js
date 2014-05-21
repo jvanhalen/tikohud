@@ -9,4 +9,4 @@ var articleSchema = new Schema({
 	}
 });
 
-mongoose.model('articles', articleSchema);
+module.exports = mongoose.model('articles', articleSchema);

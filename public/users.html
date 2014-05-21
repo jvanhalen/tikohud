@@ -1,83 +1,54 @@
-<!doctype html>
-<!-- ASSIGN OUR ANGULAR MODULE -->
-<html ng-app="tikohud">
-<head>
-	<!-- META -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
 
-	<title>TikoHUD for Karelia Students and Staff</title>
-
-	<!-- SCROLLS -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
-	<style>
-		html 					{ overflow-y:scroll; }
-		body 					{ padding-top:50px; }
-	</style>
-
-	<!-- SPELLS -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script> <!-- Bootstrap pluginit -->
-	<script src="ng-core.js"></script>
-
-</head>
-<!-- SET THE CONTROLLER AND GET ALL TODOS -->
-<body ng-controller="mainController">
-	<div class="container">
-
-		<!-- HEADER AND TODO COUNT -->
-		<div class="jumbotron text-center">
-			<h1>TikoHUD users, total <span class="label label-info">{{ users.length }}</span></h1>
-		</div>
-
-		<div>
-			Search:<input ng-model="query" type="text" />
-		  	<pre>Sorting predicate = {{predicate}}; reverse = {{reverse}}</pre>
-		  	<hr />
-		 	 <table class="user" width="100%">
-		    	<tr>
-			      	<th><a href="" ng-click="predicate = '[lastname, firstname]'; reverse=!reverse">Name</a></th>
-			      	<th><a href="" ng-click="predicate = '[role, lastname, firstname]'; reverse=!reverse">Role</a></th>
-			      	<th>Email</th>
-			      	<th>Click to delete</th>
-		    	</tr>
-			    <tr ng-repeat="user in users | orderBy:predicate:reverse | filter:query">
-					<td>{{user.lastname + ', ' + user.firstname }}</td>
-					<td width="10%">{{user.role}}</td>
-					<td>{{user.email}}</td>
-					<td>
-						<input type="checkbox" ng-click="deleteUser(user._id)"> {{ user.lastname + ', ' + user.firstname }}
-					</td>
-			    </tr>
-		  	</table>
-		</div>
-
-		<!-- Form to add a new user -->
-		<div id="add-user-form" class="row">
-			<div class="col-sm-8 col-sm-offset-2 text-center">
-				<form>
-					<div class="form-group">
-
-						<!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-						<input type="text" class="form-control input-lg text-center" placeholder="first name" ng-model="formData.firstname">
-						<input type="text" class="form-control input-lg text-center" placeholder="last name" ng-model="formData.lastname">
-						<input type="text" class="form-control input-lg text-center" placeholder="email" ng-model="formData.email">
-						<input type="password" class="form-control input-lg text-center" placeholder="password" ng-model="formData.password">
-  						Role: <select ng-model="formData.role" ng-options="role.name for role in roles">
-  						<option value="">choose role </option>
-  						</select>
-  						Currently selected: {{ {selected_role:formData.role}  }}
-  					</div>
-
-					<!-- createToDo() WILL CREATE NEW TODOS -->
-					<button type="submit" class="btn btn-primary btn-lg" ng-click="createUser()">Add</button>
-				</form>
-			</div>
-		</div>
-
+<div class="container">
+	<!-- HEADER AND TODO COUNT -->
+	<div class="jumbotron text-center">
+		<h1>TikoHUD users, total <span class="label label-info">{{ users.length }}</span></h1>
 	</div>
 
-</body>
-</html>
+	<div>
+		Search:<input ng-model="query" type="text" />
+	  	<pre>Sorting predicate = {{predicate}}; reverse = {{reverse}}</pre>
+	  	<hr />
+	 	 <table class="user" width="100%">
+	    	<tr>
+		      	<th><a href="" ng-click="predicate = '[lastname, firstname]'; reverse=!reverse">Name</a></th>
+		      	<th><a href="" ng-click="predicate = '[role, lastname, firstname]'; reverse=!reverse">Role</a></th>
+		      	<th>Email</th>
+		      	<th>Click to delete</th>
+	    	</tr>
+		    <tr ng-repeat="user in users | orderBy:predicate:reverse | filter:query">
+				<td>{{user.lastname + ', ' + user.firstname }}</td>
+				<td width="10%">{{user.role}}</td>
+				<td>{{user.email}}</td>
+				<td>
+					<input type="checkbox" ng-click="deleteUser(user._id)"> {{ user.lastname + ', ' + user.firstname }}
+				</td>
+		    </tr>
+	  	</table>
+	</div>
+
+	<!-- Form to add a new user -->
+	<div id="add-user-form" class="row" style="margin-top: 50px">
+		<div class="col-sm-8 col-sm-offset-2 text-center">
+			<form>
+				<div class="form-group">
+				<h2>Create a new user</h2>
+					<!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+					<input type="text" class="form-control input-lg text-center" placeholder="first name" ng-model="formData.firstname">
+					<input type="text" class="form-control input-lg text-center" placeholder="last name" ng-model="formData.lastname">
+					<input type="text" class="form-control input-lg text-center" placeholder="email" ng-model="formData.email">
+					<input type="password" class="form-control input-lg text-center" placeholder="password" ng-model="formData.password">
+						Role: <select ng-model="formData.role" ng-options="role.name for role in roles">
+						<option value="">choose role </option>
+						</select>
+						Currently selected: {{ {selected_role:formData.role}  }}
+					</div>
+
+				<!-- createToDo() WILL CREATE NEW TODOS -->
+				<button type="submit" class="btn btn-primary btn-lg" ng-click="createUser()">Add</button>
+			</form>
+		</div>
+	</div>
+</div>
+
 

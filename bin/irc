@@ -1,0 +1,173 @@
+#!/usr/bin/env node
+
+// Create websocket server for IRC
+var io = require('socket.io').listen(8181);
+var net = require('net');
+var moment = require('moment');
+var message = require('irc-message');
+
+var index = 0;
+var user = [{taken: false,
+            name: 'jaakkovv',
+            nickname: 'TikoHUDA',
+            realname: 'Jaakko V1'},
+            {taken: false,
+            name: 'jaakkovw',
+            nickname: 'TikoHUDB',
+            realname: 'Jaakko V2'},
+            {taken: false,
+            name: 'jaakkovww',
+            nickname: 'TikoHUDC',
+            realname: 'Jaakko V3'}]
+
+var seqno = 0;
+
+var tows = '';
+
+// Create Websocket
+io.sockets.on('connection', function (websocket) {
+
+    websocket.tcpsocket = "";
+
+    // Handle incoming messages CLIENT -> SERVER
+    websocket.on('message', function (data) {
+        console.log("received", data);
+        if (data === "connect") {
+            var msg = { seqno: seqno++,
+                        timestamp: moment().format('hh:mm:ss'),
+                        text: "Websocket connected, type 'connect' to connect IRC server"
+            }
+            // Send CONNECTED message to client
+            websocket.send(JSON.stringify(msg));
+            console.log("received CONNECT, starting IRC");
+            // Should the telnet be left open if the websocket disconnects?
+            // Maybe...
+            websocket.tcpsocket = new irc(user[index], websocket);
+            index++;
+        }
+        else {
+
+            if(websocket.tcpsocket) {
+                websocket.tcpsocket.send(data);
+            }
+
+            /*
+            // Echo timestamped command back to client
+            var msg = { seqno: seqno++,
+                        timestamp: moment().format('hh:mm:ss'),
+                        text: data
+            }
+
+            this.send(JSON.stringify(msg)); */
+
+        }
+    });
+    websocket.on('disconnect', function () {
+        console.log("IRC client disconnected");
+        websocket.tcpsocket = {};
+    });
+    websocket.on('connect', function() {
+        console.log("websocket.on connect");
+    })
+});
+
+// Create TCP socket
+
+// Create IRC object per
+var irc = function(user, websocket) {
+
+    console.log("created new IRC proxy");
+
+    var self = this;
+
+    self.websocket = websocket;
+    self.user = user;
+    self.connected = false;
+    self.socket = new net.Socket();
+    self.socket.connected = false;
+    self.socket.setNoDelay(true);
+    self.socket.setEncoding('utf8');
+
+    // Add listeners
+    self.socket.on('data', receive);
+    self.socket.on('disconnect', disconnect);
+    self.socket.on('connect', function() {
+        self.connected = true;
+        console.log("Connected to IRC");
+    });
+
+    self.connect = function() {
+        console.log("irc.connect");
+
+        // Connect to IRC SERVER
+        self.socket.connect(6667, 'irc.quakenet.org', function () {
+            self.send('USER ' + user.name + ' localhost * ' + user.realname);
+            self.send('NICK ' + user.nickname);
+        });
+    }
+
+    self.send = function(data) {
+        console.log("irc.send", data);
+
+        data = sanitize(data);
+
+        if (true == self.connected) {
+            if (!data || data.length == 0) {
+                console.error("ERROR tried to send no data");
+            } else if (data.length > 510) {
+                console.error("ERROR tried to send data > 510 chars in length: " + data);
+            } else {
+                /*
+                self.socket.write(data + '\r\n', 'utf8', function () {
+                    console.log("-> " + data);
+                });
+*/
+            }
+        }
+        else {
+            console.log("TCP socket not connected");
+        }
+    }
+
+    function disconnect() {
+        console.log("irc.disconnect");
+        self.connected = false;
+    }
+
+    function receive(data) {
+        console.log("irc.receive", data);
+        var arr = data.split("\r\n");
+
+        for(var line in arr) { 
+            if(arr[line] !== "") {
+                var msg = { seqno: seqno++,
+                            timestamp: moment().format('hh:mm:ss'),
+                            text: arr[line]
+                }
+
+                // Send IRC message to client
+                self.websocket.send(JSON.stringify(msg));
+            }
+        }
+
+    }
+
+    function sanitize(data) {
+        if (!data) {
+            return data;
+        }
+
+        /* Note:
+         * 0x00 (null character) is invalid
+         * 0x01 signals a CTCP message, which we shouldn't ever need to do
+         * 0x02 is bold in mIRC (and thus other GUI clients)
+         * 0x03 precedes a color code in mIRC (and thus other GUI clients)
+         * 0x04 thru 0x19 are invalid control codes, except for:
+         * 0x16 is "reverse" (swaps fg and bg colors) in mIRC
+         */
+        return data.replace(/\n/g, "\\n").replace(/\r/g, "\\r")
+            .replace(/[^\x02-\x03|\x16|\x20-\x7e]/g, "");
+    }
+
+    self.connect();
+}
